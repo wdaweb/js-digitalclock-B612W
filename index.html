@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <style>
+      body {
+        margin: 0;
+        background: burlywood;
+        display: flex;
+        justify-content: space-around;
+        flex-wrap: wrap;
+        height: 100vh;
+        /* align-content: center; */
+      }
+      .circle {
+        width: 300px;
+        height: 300px;
+        background: white;
+        border-radius: 300px;
+        margin: 20px;
+        padding: 20px;
+        position: relative;
+      }
+      h3 {
+        text-align: center;
+        position: relative;
+        z-index: 999;
+      }
+      .jhour1 {
+        /*時針*/
+        width: 10px;
+        height: 30%;
+        background: #00f;
+        position: absolute;
+        left: 50%;
+        top: 25%;
+        margin-left: -5px;
+      }
+      .jmin1 {
+        /*分針*/
+        width: 10px;
+        height: 40%;
+        background: #0f0;
+        position: absolute;
+        left: 50%;
+        top: 15%;
+        margin-left: -5px;
+      }
+      .jsec1 {
+        /*秒針*/
+        width: 4px;
+        height: 50%;
+        background: #f00;
+        position: absolute;
+        left: 50%;
+        top: 5%;
+        margin-left: -2px;
+      }
+      .zsec1 {
+        width: 300px;
+        height: 300px;
+        position: absolute;
+        animation: j_s 60s infinite linear;
+      }
+      .zmin1 {
+        width: 300px;
+        height: 300px;
+        position: absolute;
+        animation: j_m 3600s infinite linear;
+      }
+      .zhour1 {
+        width: 300px;
+        height: 300px;
+        position: absolute;
+        animation: j_h 43200s infinite linear;
+      }
+      .jhour2 {
+        /*時針*/
+        width: 16px;
+        height: 300px;
+        background: url("hh.png");
+        position: absolute;
+        left: 50%;
+        margin-left: -8px;
+        animation: j_h 43200s infinite linear;
+      }
+      .jmin2 {
+        /*分針*/
+        width: 16px;
+        height: 300px;
+        background: url("mm.png");
+        position: absolute;
+        left: 50%;
+        margin-left: -8px;
+        animation: j_m 3600s infinite linear;
+      }
+      .jsec2 {
+        /*秒針*/
+        width: 16px;
+        height: 300px;
+        background: url("ss.png");
+        position: absolute;
+        left: 50%;
+        margin-left: -8px;
+        animation: j_s 60s infinite linear;
+      }
+      .ohour3 {
+        animation: j_h 43200s infinite linear;
+        transform-origin: 50% 82px;
+      }
+      .omin3 {
+        animation: j_m 3600s infinite linear;
+        transform-origin: 50% 116px;
+      }
+      .osec3 {
+        animation: j_s 60s infinite linear;
+        transform-origin: 50% 150px;
+      }
+      .ohour4 {
+        transform-origin: 50% 82px;
+      }
+      .omin4 {
+        transform-origin: 50% 116px;
+      }
+      .osec4 {
+        transform-origin: 50% 150px;
+      }
+    </style>
+    <script>
+      /*min=45; => y=270 */
+      var time = new Date();
+      var pos_s = time.getSeconds();
+      var pos_m = time.getMinutes();
+      var pos_h = time.getHours();
+      var x = pos_s * 6;
+      var y = pos_m * 6 + pos_s * 0.1; /*對Y來說還有一個角度是60秒滿足6度*/
+      var z = pos_h * 30 + pos_m * 0.5; /*對Z來說還有一個角度是60分鐘滿足30度*/
+      document.write(`
+      <style>
+      @keyframes j_s {
+        from {transform: rotate(${x}deg);}
+        to {transform: rotate(${360 + x}deg);}
+      }
+      @keyframes j_m {
+        from {transform: rotate(${y}deg);}
+        to {transform: rotate(${360 + y}deg);}
+      }
+      @keyframes j_h {
+        from {transform: rotate(${z}deg);}
+        to {transform: rotate(${360 + z}deg);}
+      }
+    </style>
+      `);
+    </script>
+  </head>
+  <body>
+    <div class="circle">
+      <div class="jmin2"></div>
+      <div class="jhour2"></div>
+      <div class="jsec2"></div>
+    </div>
+
+    <script>
+      /*初始先ON一遍DOM*/
+      document.getElementsByClassName(
+        "osec4"
+      )[0].style.transform = `rotate(${x}deg)`;
+      document.getElementsByClassName(
+        "omin4"
+      )[0].style.transform = `rotate(${y}deg)`;
+      document.getElementsByClassName(
+        "ohour4"
+      )[0].style.transform = `rotate(${z}deg)`;
+
+      /*跑reply*/
+      function overtime() {
+        time = new Date();
+        pos_s = time.getSeconds();
+        pos_m = time.getMinutes();
+        pos_h = time.getHours();
+        x = pos_s * 6;
+        y = pos_m * 6 + pos_s * 0.1; /*對Y來說還有一個角度是60秒滿足6度*/
+        z = pos_h * 30 + pos_m * 0.5; /*對Z來說還有一個角度是60分鐘滿足30度*/
+        document.getElementsByClassName(
+          "osec4"
+        )[0].style.transform = `rotate(${x}deg)`;
+        document.getElementsByClassName(
+          "omin4"
+        )[0].style.transform = `rotate(${y}deg)`;
+        document.getElementsByClassName(
+          "ohour4"
+        )[0].style.transform = +`rotate(${z}deg)`;
+      }
+
+      var loop = setInterval(overtime, 1000);
+
+      function ctl(who) {
+        if (who.textContent == "STOP") {
+          clearInterval(loop);
+          who.textContent = "PLAY";
+        } else {
+          loop = setInterval(overtime, 1000);
+          who.textContent = "STOP";
+        }
+      }
+    </script>
+  </body>
+</html>
